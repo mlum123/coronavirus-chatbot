@@ -1,7 +1,9 @@
 import React from "react";
 import "./App.css";
-import { Button } from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
 import Coronavirus from "./util/Coronavirus";
+import Header from "./components/Header";
+import Chatbox from "./components/Chatbox";
 
 class App extends React.Component {
   constructor(props) {
@@ -20,14 +22,14 @@ class App extends React.Component {
   }
 
   getStateStats(state) {
-    Coronavirus.getStateStats("ca").then((StateStats) => {
+    Coronavirus.getStateStats(state).then((StateStats) => {
       this.setState({ StateStats: StateStats });
       console.log(this.state);
     });
   }
 
   getStateInfo(state) {
-    Coronavirus.getStateInfo("ca").then((StateInfo) => {
+    Coronavirus.getStateInfo(state).then((StateInfo) => {
       this.setState({ StateInfo: StateInfo });
       console.log(this.state);
     });
@@ -36,10 +38,17 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header"></header>
-        <Button onClick={this.getUSStats}>US Stats</Button>
-        <Button onClick={this.getStateStats}>State Stats</Button>
-        <Button onClick={this.getStateInfo}>State Info</Button>
+        <Container>
+          <div class="skewed"></div>
+          <Row>
+            <Col xs="12" lg="6">
+              <Chatbox></Chatbox>
+            </Col>
+            <Col xs="12" lg="6">
+              <Header></Header>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }
