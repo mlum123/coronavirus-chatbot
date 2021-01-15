@@ -2,8 +2,9 @@ import React from "react";
 import "./App.css";
 import { Container, Row, Col, Button } from "reactstrap";
 import Coronavirus from "./util/Coronavirus";
-import Header from "./components/Header";
 import Chatbox from "./components/Chatbox";
+import Header from "./components/Header";
+import Acknowledgements from "./components/Acknowledgements";
 
 class App extends React.Component {
   constructor(props) {
@@ -42,10 +43,19 @@ class App extends React.Component {
           <div class="skewed"></div>
           <Row>
             <Col xs="12" lg="6">
-              <Chatbox></Chatbox>
+              <Chatbox />
             </Col>
             <Col xs="12" lg="6">
-              <Header></Header>
+              <Row>
+                <Col>
+                  <Header />
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Acknowledgements />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Container>

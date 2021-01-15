@@ -1,0 +1,12 @@
+#acknowledgements {
+  color: black;
+  margin-top: 22rem;
+  text-align: right;
+}
+
+@media screen and (max-width: 992px) {
+  #acknowledgements {
+    margin-top: 2rem;
+    text-align: center;
+  }
+}
