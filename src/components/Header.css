@@ -3,6 +3,7 @@ header {
   text-align: left;
 }
 
+/* on small screens, Header will take up its own col */
 @media screen and (max-width: 992px) {
   header {
     color: black;
@@ -10,4 +11,8 @@ header {
     padding-bottom: 2rem;
     text-align: center;
   }
+}
+
+h2 {
+  font-style: italic;
 }

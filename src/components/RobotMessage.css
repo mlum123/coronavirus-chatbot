@@ -1,0 +1,16 @@
+.bot-chat-icon {
+  color: #6daffe;
+  margin: 0.5rem 0;
+  margin-left: 1rem;
+}
+
+.bot-message {
+  margin: 0.5rem 0;
+  margin-right: 5rem;
+  min-height: 2.5rem;
+  background: #6daffe;
+  border-radius: 5px;
+  color: white;
+  text-align: left;
+  padding: 0.5rem 0.5rem;
+}

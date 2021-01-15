@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import Coronavirus from "./util/Coronavirus";
 import Chatbox from "./components/Chatbox";
 import Header from "./components/Header";
@@ -9,7 +9,38 @@ import Acknowledgements from "./components/Acknowledgements";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      messages: [
+        {
+          speaker: "bot",
+          text:
+            "Hello! I'm a coronavirus chatbot. Ask me any questions you have about COVID-19.",
+        },
+        {
+          speaker: "user",
+          text: "WOWOWOWOW",
+        },
+        {
+          speaker: "user",
+          text: "WOWOWOW WOWOWOWOWWOWO OWOW",
+        },
+        {
+          speaker: "bot",
+          text:
+            "WOWOWOWOWWOWO WOWOWWOWOWOWOWWO OWOW OWWOWOWOWOWWO WOWOWOW WOWOWOWOWWOWO OWOW",
+        },
+        {
+          speaker: "bot",
+          text:
+            "WOWOWOWOWWOWO WOWOWWOWOWOWOWWO OWOW OWWOWOWOWOWWO WOWOWOW WOWOWOWOWWOWO OWOW",
+        },
+        {
+          speaker: "bot",
+          text:
+            "WOWOWOWOWWOWO WOWOWWOWOWOWOWWO OWOW OWWOWOWOWOWWO WOWOWOW WOWOWOWOWWOWO OWOW",
+        },
+      ],
+    };
     this.getUSStats = this.getUSStats.bind(this);
     this.getStateStats = this.getStateStats.bind(this);
     this.getStateInfo = this.getStateInfo.bind(this);
@@ -43,7 +74,7 @@ class App extends React.Component {
           <div class="skewed"></div>
           <Row>
             <Col xs="12" lg="6">
-              <Chatbox />
+              <Chatbox messages={this.state.messages} />
             </Col>
             <Col xs="12" lg="6">
               <Row>

@@ -1,4 +1,5 @@
-.fa-android {
+/* style light blue chat header bar */
+#chat-header {
   padding: 1rem 0;
   width: 100%;
   color: #6daffe;
