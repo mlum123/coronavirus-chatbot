@@ -7,20 +7,37 @@ import UserMessage from "./UserMessage";
 import UserInput from "./UserInput";
 
 class Chatbox extends React.Component {
+  // use messagesRef for chatbox's automatic scroll to bottom when new messages are added
+  constructor(props) {
+    super(props);
+    this.messagesRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    let el = this.messagesRef.current;
+    el.scrollTop = el.scrollHeight;
+  }
+
   render() {
     return (
       <div id="chatbox">
         <ChatHeader className="fixed-top" />
-        <div id="messages">
+        <div id="messages" ref={this.messagesRef}>
           {this.props.messages.map((message) => {
             return message.speaker === "bot" ? (
-              <RobotMessage message={message.text} />
+              <RobotMessage
+                key={this.props.messages.indexOf(message)}
+                message={message.text}
+              />
             ) : (
-              <UserMessage message={message.text} />
+              <UserMessage
+                key={this.props.messages.indexOf(message)}
+                message={message.text}
+              />
             );
           })}
         </div>
-        <UserInput />
+        <UserInput getChatbotResponse={this.props.getChatbotResponse} />
       </div>
     );
   }

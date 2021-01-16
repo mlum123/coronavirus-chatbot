@@ -1,4 +1,4 @@
-// Header component describing intent of web app
+// Header component of the page, describes intent of web app
 import React from "react";
 import "./Header.css";
 

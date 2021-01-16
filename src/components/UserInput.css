@@ -21,4 +21,9 @@ Input[type="text"]:focus {
 .fa-chevron-circle-right {
   color: #6daffe;
   margin-right: 1rem;
+  cursor: pointer;
+}
+
+.fa-chevron-circle-right:hover {
+  transform: scale(1.05);
 }

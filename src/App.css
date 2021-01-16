@@ -2,8 +2,20 @@
   font-family: Karla, Arial, Calibri, sans-serif;
   text-align: center;
   color: white;
-  height: 100vh;
+  height: 130vh;
   background: #edf6ff;
+}
+
+@media screen and (max-width: 768px) {
+  .App {
+    height: 115vh;
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .App {
+    height: 110vh;
+  }
 }
 
 /* for slanted background divider look */

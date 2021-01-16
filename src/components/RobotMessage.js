@@ -1,4 +1,4 @@
-// RobotMessage component for the chatbot's chat icon and message
+// RobotMessage component to display the chatbot's chat icon and message
 import React from "react";
 import "./RobotMessage.css";
 import { Row, Col } from "reactstrap";

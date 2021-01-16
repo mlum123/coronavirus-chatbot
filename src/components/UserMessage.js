@@ -1,4 +1,4 @@
-// UserMessage component for the user's chat icon and message
+// UserMessage component to display the user's message
 import React from "react";
 import "./UserMessage.css";
 
