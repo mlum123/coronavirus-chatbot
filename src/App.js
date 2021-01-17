@@ -41,17 +41,21 @@ class App extends React.Component {
   // add user input to messages array in state
   // use Reply module to get chatbot response to user input
   // add chatbot response to messages array in state
-  getChatbotResponse(userInput) {
+  async getChatbotResponse(userInput) {
     let messages = this.state.messages;
     messages.push({
       speaker: "user",
       text: userInput,
     });
-    messages.push({
-      speaker: "bot",
-      text: Reply.getChatbotResponse(userInput),
+
+    await Reply.getChatbotResponse(userInput).then((botResponse) => {
+      messages.push({
+        speaker: "bot",
+        text: botResponse,
+      });
+
+      this.setState({ messages: messages });
     });
-    this.setState({ messages: messages });
   }
 
   render() {
