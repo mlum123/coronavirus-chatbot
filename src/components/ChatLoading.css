@@ -1,15 +1,23 @@
+.bot-chat-icon {
+  color: #6daffe;
+  margin: 0.5rem 0;
+  margin-left: 1rem;
+}
+
 /* Huge thanks to @tobiasahlin at http://tobiasahlin.com/spinkit/ */
 .spinner {
-  margin: 100px auto 0;
-  width: 70px;
-  text-align: center;
+  margin: 0.5rem 0;
+  margin-right: 5rem;
+  min-height: 2.5rem;
+  background: #6daffe;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
 }
 
 .spinner > div {
-  width: 18px;
-  height: 18px;
-  background-color: #333;
-
+  width: 0.75rem;
+  height: 0.75rem;
+  background: white;
   border-radius: 100%;
   display: inline-block;
   -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
