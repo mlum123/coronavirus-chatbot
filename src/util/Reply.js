@@ -21,8 +21,8 @@ let hospitalizations_new = 0; // hospitalizedIncrease
 let deaths = 0; // death
 let deaths_new = 0; // deathIncrease
 let icu = 0; // inIcuCurrently
-let icu_capacity = "";
 let recovered = 0; // recovered
+/*
 const stats_responses = [
   `${place} has had ${cases} coronavirus cases, to date.`,
   `${place} had ${cases_new} new coronavirus cases, today.`,
@@ -31,8 +31,32 @@ const stats_responses = [
   `${place} has had ${deaths} coronavirus deaths, to date.`,
   `${place} had ${deaths_new} new coronavirus deaths, today.`,
   `${place} currently has ${icu} ICU patients with coronavirus.`,
-  `${place} currently has an ICU capacity of ${icu_capacity}.`,
   `${place} has had ${recovered} coronavirus patients who recovered, to date.`,
+];
+*/
+
+/*
+const stats_responses = [
+  "[PLACE] has had [CASES] coronavirus cases, to date.",
+  "[PLACE] had [CASES_NEW] new coronavirus cases, today.",
+  "[PLACE] has [HOSPITALIZATIONS] current coronavirus hospitalizations.",
+  "[PLACE] had [HOSPITALIZATIONS_NEW] new coronavirus hospitalizations, today.",
+  "[PLACE] has had [DEATHS] coronavirus deaths, to date.",
+  "[PLACE] had [DEATHS_NEW] new coronavirus deaths, today.",
+  "[PLACE] currently has [ICU] ICU patients with coronavirus.",
+  "[PLACE] has had [RECOVERED] coronavirus patients who recovered, to date.",
+];
+*/
+
+const stats_responses = [
+  "[PLACE] has had [positive] coronavirus cases, to date.",
+  "[PLACE] had [positiveIncrease] new coronavirus cases, today.",
+  "[PLACE] has [hospitalizedCurrently] current coronavirus hospitalizations.",
+  "[PLACE] had [hospitalizedIncrease] new coronavirus hospitalizations, today.",
+  "[PLACE] has had [death] coronavirus deaths, to date.",
+  "[PLACE] had [deathIncrease] new coronavirus deaths, today.",
+  "[PLACE] currently has [inIcuCurrently] ICU patients with coronavirus.",
+  "[PLACE] has had [recovered] coronavirus patients who recovered, to date.",
 ];
 
 // responses to state info questions
@@ -44,6 +68,130 @@ const state_info_responses = [
   `${state}'s COVID-19 Twitter handle is ${twitter}.`,
 ];
 
+const states = [
+  "Alabama",
+  "Alaska",
+  "American Samoa",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "District of Columbia",
+  "Federated States of Micronesia",
+  "Florida",
+  "Georgia",
+  "Guam",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Marshall Islands",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Northern Mariana Islands",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Palau",
+  "Pennsylvania",
+  "Puerto Rico",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virgin Island",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming",
+];
+
+const states_abbrev = [
+  "AL",
+  "AK",
+  "AS",
+  "AZ",
+  "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "DC",
+  "FM",
+  "FL",
+  "GA",
+  "GU",
+  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
+  "KS",
+  "KY",
+  "LA",
+  "ME",
+  "MH",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
+  "MS",
+  "MO",
+  "MT",
+  "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
+  "NY",
+  "NC",
+  "ND",
+  "MP",
+  "OH",
+  "OK",
+  "OR",
+  "PW",
+  "PA",
+  "PR",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VT",
+  "VI",
+  "VA",
+  "WA",
+  "WV",
+  "WI",
+  "WY",
+];
+
 // TensorFlow.js Universal Sentence Encoder model
 // https://github.com/tensorflow/tfjs-models/tree/master/universal-sentence-encoder
 require("@tensorflow/tfjs");
@@ -51,7 +199,23 @@ const use = require("@tensorflow-models/universal-sentence-encoder");
 
 const Reply = {
   // returns chatbot's reponse to user input
-  getChatbotResponse(userInput) {
+  async getChatbotResponse(userInput) {
+    // get U.S. and state stats and info from Coronavirus module
+    const USStats = await Coronavirus.getUSStats().then((USStats) => {
+      // console.log(USStats);
+      return USStats;
+    });
+
+    /* TODO FIGURE OUT WHAT STATE
+    const StateStats = await Coronavirus.getStateStats().then((StateStats) => {
+      return StateStats;
+    });
+
+    const StateInfo = await Coronavirus.getStateInfo().then((StateInfo) => {
+      return StateInfo;
+    });
+    */
+
     // use TensorFlow.js Universal Sentence Encoder QnA dual encoder
     // Load the model.
     return use.loadQnA().then((model) => {
@@ -105,8 +269,30 @@ const Reply = {
         }
       }
 
-      const answer = possible_responses[scores.indexOf(Math.max(...scores))];
+      // get answer that best matches user question
+      let answer = possible_responses[scores.indexOf(Math.max(...scores))];
 
+      // check if answer needs additional information
+      if (stats_responses.includes(answer)) {
+        if (userInput.toLowerCase().includes("u.s." || "us" || "america")) {
+          // fill in blanks for place and statistic in answer string
+          answer = answer.replace("[PLACE]", "The U.S.");
+
+          // use regular expression to find statistic to fill in — word with square brackets surrounding it
+          const blanks = answer.match(/\[\w+\]/);
+          const statName = blanks[0].replace("[", "").replace("]", "");
+          const stat = USStats[statName].toLocaleString(); // use toLocaleString to insert comma between every 3 digits
+          answer = answer.replace(blanks[0], stat);
+        } else {
+          if (
+            // TODO title case userInput so it matches states array?
+            states.includes(userInput) ||
+            states_abbrev.includes(userInput.toUpperCase())
+          ) {
+            // TO DO change answer to include all the stats and the place name we need
+          }
+        }
+      }
       return answer;
     });
   },
@@ -126,25 +312,6 @@ const Reply = {
   zipWith(f, xs, ys) {
     const ny = ys.length;
     return (xs.length <= ny ? xs : xs.slice(0, ny)).map((x, i) => f(x, ys[i]));
-  },
-
-  // functions for getting U.S. and state stats and info from Coronavirus module
-  getUSStats() {
-    Coronavirus.getUSStats().then((USStats) => {
-      return USStats;
-    });
-  },
-
-  getStateStats(state) {
-    Coronavirus.getStateStats(state).then((StateStats) => {
-      return StateStats;
-    });
-  },
-
-  getStateInfo(state) {
-    Coronavirus.getStateInfo(state).then((StateInfo) => {
-      return StateInfo;
-    });
   },
 };
 
