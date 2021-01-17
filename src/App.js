@@ -10,6 +10,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       messages: [
         {
           speaker: "bot",
@@ -39,6 +40,9 @@ class App extends React.Component {
   // use Reply module to get chatbot response to user input
   // add chatbot response to messages array in state
   async getChatbotResponse(userInput) {
+    // set isLoading to true in state to display chatLoading dots
+    this.setState({ isLoading: true });
+
     let messages = this.state.messages;
     await Reply.getChatbotResponse(userInput).then((botResponse) => {
       messages.push({
@@ -46,7 +50,7 @@ class App extends React.Component {
         text: botResponse,
       });
 
-      this.setState({ messages: messages });
+      this.setState({ isLoading: false, messages: messages });
     });
   }
 
@@ -60,6 +64,7 @@ class App extends React.Component {
               <Chatbox
                 messages={this.state.messages}
                 submitUserInput={this.submitUserInput}
+                isLoading={this.state.isLoading}
               />
             </Col>
             <Col xs="12" lg="6">

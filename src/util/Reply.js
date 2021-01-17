@@ -1,6 +1,5 @@
 // Reply module handles user's text input and returns appropriate response
 // uses functions from Coronavirus module to incorporate U.S. or state stats and info in response if necessary
-import { range } from "@tensorflow/tfjs";
 import Coronavirus from "./Coronavirus";
 
 // responses to frequently asked questions about coronavirus
@@ -218,7 +217,6 @@ const Reply = {
   async getChatbotResponse(userInput) {
     // get U.S. and state stats and info from Coronavirus module
     const USStats = await Coronavirus.getUSStats().then((USStats) => {
-      // console.log(USStats);
       return USStats;
     });
 

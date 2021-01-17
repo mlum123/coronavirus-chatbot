@@ -5,6 +5,7 @@ import ChatHeader from "./ChatHeader";
 import RobotMessage from "./RobotMessage";
 import UserMessage from "./UserMessage";
 import UserInput from "./UserInput";
+import ChatLoading from "./ChatLoading";
 
 class Chatbox extends React.Component {
   // use messagesRef for chatbox's automatic scroll to bottom when new messages are added
@@ -36,6 +37,7 @@ class Chatbox extends React.Component {
               />
             );
           })}
+          {this.props.isLoading ? <ChatLoading /> : null}
         </div>
         <UserInput submitUserInput={this.props.submitUserInput} />
       </div>
