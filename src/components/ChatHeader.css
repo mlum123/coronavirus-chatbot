@@ -7,4 +7,6 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
 }
