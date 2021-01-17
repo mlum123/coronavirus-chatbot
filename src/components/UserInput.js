@@ -28,8 +28,8 @@ class UserInput extends React.Component {
   };
 
   // called when user hits enter in text input area, or clicks arrow button to submit message
-  submitUserInput(event) {
-    this.props.getChatbotResponse(this.state.userInput);
+  submitUserInput() {
+    this.props.submitUserInput(this.state.userInput);
     this.setState({ userInput: "" }); // clear input area after submitting user's text
   }
 

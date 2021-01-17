@@ -16,38 +16,30 @@ class App extends React.Component {
           text:
             "Hello! I'm a coronavirus chatbot. Ask me any questions you have about COVID-19.",
         },
-        {
-          speaker: "user",
-          text: "What is coronavirus?",
-        },
-        {
-          speaker: "bot",
-          text:
-            "According to Johns Hopkins Medecine, 'Coronaviruses are a type of virus. There are many different kinds, and some cause disease. A newly identified coronavirus, SARS-CoV-2, has caused a worldwide pandemic of respiratory illness, called COVID-19.'",
-        },
-        {
-          speaker: "user",
-          text: "Where can I get a vaccine?",
-        },
-        {
-          speaker: "bot",
-          text: "California has had 2.9 million coronavirus cases, to date.",
-        },
       ],
     };
     this.getChatbotResponse = this.getChatbotResponse.bind(this);
+    this.submitUserInput = this.submitUserInput.bind(this);
   }
 
   // add user input to messages array in state
-  // use Reply module to get chatbot response to user input
-  // add chatbot response to messages array in state
-  async getChatbotResponse(userInput) {
+  // call asynchronous getChatbotResponse function to get best response to user input using Reply module logic
+  submitUserInput(userInput) {
     let messages = this.state.messages;
     messages.push({
       speaker: "user",
       text: userInput,
     });
 
+    this.setState({ messages: messages });
+
+    this.getChatbotResponse(userInput);
+  }
+
+  // use Reply module to get chatbot response to user input
+  // add chatbot response to messages array in state
+  async getChatbotResponse(userInput) {
+    let messages = this.state.messages;
     await Reply.getChatbotResponse(userInput).then((botResponse) => {
       messages.push({
         speaker: "bot",
@@ -67,7 +59,7 @@ class App extends React.Component {
             <Col xs="12" lg="6" className="d-flex justify-content-center">
               <Chatbox
                 messages={this.state.messages}
-                getChatbotResponse={this.getChatbotResponse}
+                submitUserInput={this.submitUserInput}
               />
             </Col>
             <Col xs="12" lg="6">

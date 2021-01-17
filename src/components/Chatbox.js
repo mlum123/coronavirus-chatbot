@@ -37,7 +37,7 @@ class Chatbox extends React.Component {
             );
           })}
         </div>
-        <UserInput getChatbotResponse={this.props.getChatbotResponse} />
+        <UserInput submitUserInput={this.props.submitUserInput} />
       </div>
     );
   }
