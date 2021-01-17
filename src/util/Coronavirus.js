@@ -13,18 +13,9 @@ const Coronavirus = {
       });
   },
 
-  // gets current stats for specified state
-  getStateStats(state) {
-    return fetch(`${baseUrl}/v1/states/${state}/current.json`).then(
-      (response) => {
-        return response.json();
-      }
-    );
-  },
-
-  // gets metadata on specified state
-  getStateInfo(state) {
-    return fetch(`${baseUrl}/v1/states/${state}/info.json`).then((response) => {
+  // gets current stats for all states
+  getAllStateStats() {
+    return fetch(`${baseUrl}/v1/states/current.json`).then((response) => {
       return response.json();
     });
   },

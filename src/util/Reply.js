@@ -1,5 +1,6 @@
 // Reply module handles user's text input and returns appropriate response
 // uses functions from Coronavirus module to incorporate U.S. or state stats and info in response if necessary
+import { range } from "@tensorflow/tfjs";
 import Coronavirus from "./Coronavirus";
 
 // responses to frequently asked questions about coronavirus
@@ -12,42 +13,7 @@ const faq_responses = [
   "According to Johns Hopkins Medicine, 'As of now, there is not a specific treatment for the virus. People who become sick from COVID-19 should be treated with supportive measures: those that relieve symptoms. For severe cases, there may be additional options for treatment, including research drugs and therapeutics.'",
 ];
 
-// responses to U.S. or state coronavirus statistics questions
-let place = "";
-let cases = 0; // positive
-let cases_new = 0; // positiveIncrease
-let hospitalizations = 0; // hospitalizedCurrently
-let hospitalizations_new = 0; // hospitalizedIncrease
-let deaths = 0; // death
-let deaths_new = 0; // deathIncrease
-let icu = 0; // inIcuCurrently
-let recovered = 0; // recovered
-/*
-const stats_responses = [
-  `${place} has had ${cases} coronavirus cases, to date.`,
-  `${place} had ${cases_new} new coronavirus cases, today.`,
-  `${place} has ${hospitalizations} current coronavirus hospitalizations.`,
-  `${place} had ${hospitalizations_new} new coronavirus hospitalizations, today.`,
-  `${place} has had ${deaths} coronavirus deaths, to date.`,
-  `${place} had ${deaths_new} new coronavirus deaths, today.`,
-  `${place} currently has ${icu} ICU patients with coronavirus.`,
-  `${place} has had ${recovered} coronavirus patients who recovered, to date.`,
-];
-*/
-
-/*
-const stats_responses = [
-  "[PLACE] has had [CASES] coronavirus cases, to date.",
-  "[PLACE] had [CASES_NEW] new coronavirus cases, today.",
-  "[PLACE] has [HOSPITALIZATIONS] current coronavirus hospitalizations.",
-  "[PLACE] had [HOSPITALIZATIONS_NEW] new coronavirus hospitalizations, today.",
-  "[PLACE] has had [DEATHS] coronavirus deaths, to date.",
-  "[PLACE] had [DEATHS_NEW] new coronavirus deaths, today.",
-  "[PLACE] currently has [ICU] ICU patients with coronavirus.",
-  "[PLACE] has had [RECOVERED] coronavirus patients who recovered, to date.",
-];
-*/
-
+// responses to state statistics questions
 const stats_responses = [
   "[PLACE] has had [positive] coronavirus cases, to date.",
   "[PLACE] had [positiveIncrease] new coronavirus cases, today.",
@@ -57,15 +23,6 @@ const stats_responses = [
   "[PLACE] had [deathIncrease] new coronavirus deaths, today.",
   "[PLACE] currently has [inIcuCurrently] ICU patients with coronavirus.",
   "[PLACE] has had [recovered] coronavirus patients who recovered, to date.",
-];
-
-// responses to state info questions
-let state = "";
-let website = ""; // covid19Site
-let twitter = ""; // twitter
-const state_info_responses = [
-  `${state}'s COVID-19 website is ${website}.`,
-  `${state}'s COVID-19 Twitter handle is ${twitter}.`,
 ];
 
 const states = [
@@ -192,6 +149,65 @@ const states_abbrev = [
   "WY",
 ];
 
+const states_abbrev_mapping = {
+  Alabama: "AL",
+  Alaska: "AK",
+  "American Samoa": "AS",
+  Arizona: "AZ",
+  Arkansas: "AR",
+  California: "CA",
+  Colorado: "CO",
+  Connecticut: "CT",
+  Delaware: "DE",
+  "District of Columbia": "DC",
+  Florida: "FL",
+  Georgia: "GA",
+  Guam: "GU",
+  Hawaii: "HI",
+  Idaho: "ID",
+  Illinois: "IL",
+  Indiana: "IN",
+  Iowa: "IA",
+  Kansas: "KS",
+  Kentucky: "KY",
+  Louisiana: "LA",
+  Maine: "ME",
+  Maryland: "MD",
+  Massachusetts: "MA",
+  Michigan: "MI",
+  Minnesota: "MN",
+  Mississippi: "MS",
+  Missouri: "MO",
+  Montana: "MT",
+  Nebraska: "NE",
+  Nevada: "NV",
+  "New Hampshire": "NH",
+  "New Jersey": "NJ",
+  "New Mexico": "NM",
+  "New York": "NY",
+  "North Carolina": "NC",
+  "North Dakota": "ND",
+  "Northern Mariana Islands": "MP",
+  Ohio: "OH",
+  Oklahoma: "OK",
+  Oregon: "OR",
+  Pennsylvania: "PA",
+  "Puerto Rico": "PR",
+  "Rhode Island": "RI",
+  "South Carolina": "SC",
+  "South Dakota": "SD",
+  Tennessee: "TN",
+  Texas: "TX",
+  Utah: "UT",
+  Vermont: "VT",
+  "Virgin Islands": "VI",
+  Virginia: "VA",
+  Washington: "WA",
+  "West Virginia": "WV",
+  Wisconsin: "WI",
+  Wyoming: "WY",
+};
+
 // TensorFlow.js Universal Sentence Encoder model
 // https://github.com/tensorflow/tfjs-models/tree/master/universal-sentence-encoder
 require("@tensorflow/tfjs");
@@ -206,15 +222,11 @@ const Reply = {
       return USStats;
     });
 
-    /* TODO FIGURE OUT WHAT STATE
-    const StateStats = await Coronavirus.getStateStats().then((StateStats) => {
-      return StateStats;
-    });
-
-    const StateInfo = await Coronavirus.getStateInfo().then((StateInfo) => {
-      return StateInfo;
-    });
-    */
+    const AllStateStats = await Coronavirus.getAllStateStats().then(
+      (AllStateStats) => {
+        return AllStateStats;
+      }
+    );
 
     // use TensorFlow.js Universal Sentence Encoder QnA dual encoder
     // Load the model.
@@ -241,8 +253,7 @@ const Reply = {
       let possible_responses = [];
       possible_responses = possible_responses.concat(
         faq_responses,
-        stats_responses,
-        state_info_responses
+        stats_responses
       );
       const input = {
         queries: [userInput],
@@ -272,8 +283,9 @@ const Reply = {
       // get answer that best matches user question
       let answer = possible_responses[scores.indexOf(Math.max(...scores))];
 
-      // check if answer needs additional information
+      // check if answer needs additional information (if it's a statistic response)
       if (stats_responses.includes(answer)) {
+        // check if user is asking about the U.S.
         if (userInput.toLowerCase().includes("u.s." || "us" || "america")) {
           // fill in blanks for place and statistic in answer string
           answer = answer.replace("[PLACE]", "The U.S.");
@@ -283,14 +295,43 @@ const Reply = {
           const statName = blanks[0].replace("[", "").replace("]", "");
           const stat = USStats[statName].toLocaleString(); // use toLocaleString to insert comma between every 3 digits
           answer = answer.replace(blanks[0], stat);
-        } else {
+        }
+        // check if user is asking about a specific state
+        else if (
+          states.some((state) => Reply.titleCase(userInput).includes(state)) ||
+          states_abbrev.some((state_abbrev) =>
+            userInput.toUpperCase().includes(state_abbrev)
+          )
+        ) {
+          // fill in blanks for place and statistic in answer string
+
+          // find correct state abbrev for state user is asking about
+          let state_abbrev;
           if (
-            // TODO title case userInput so it matches states array?
-            states.includes(userInput) ||
-            states_abbrev.includes(userInput.toUpperCase())
+            states.some((state) => Reply.titleCase(userInput).includes(state))
           ) {
-            // TO DO change answer to include all the stats and the place name we need
+            const state = states.find((state) =>
+              Reply.titleCase(userInput).includes(state)
+            );
+            state_abbrev = states_abbrev_mapping[state];
+          } else {
+            state_abbrev = states_abbrev.find((state_abbrev) =>
+              userInput.includes(state_abbrev)
+            );
           }
+
+          answer = answer.replace("[PLACE]", state_abbrev);
+
+          // get stats for specified state from all states stats
+          const stateStats = AllStateStats.find(
+            (stateStats) => stateStats.state === state_abbrev
+          );
+
+          // use regular expression to find statistic to fill in — word with square brackets surrounding it
+          const blanks = answer.match(/\[\w+\]/);
+          const statName = blanks[0].replace("[", "").replace("]", "");
+          const stat = stateStats[statName].toLocaleString(); // use toLocaleString to insert comma between every 3 digits
+          answer = answer.replace(blanks[0], stat);
         }
       }
       return answer;
@@ -312,6 +353,17 @@ const Reply = {
   zipWith(f, xs, ys) {
     const ny = ys.length;
     return (xs.length <= ny ? xs : xs.slice(0, ny)).map((x, i) => f(x, ys[i]));
+  },
+
+  // helper function for checking for state names
+  // title cases an input string
+  titleCase(str) {
+    str = str.toLowerCase();
+    const strArray = str.split(" ");
+    for (let i = 0; i < strArray.length; i++) {
+      strArray[i] = strArray[i].charAt(0).toUpperCase() + strArray[i].slice(1);
+    }
+    return strArray.join(" ");
   },
 };
 
