@@ -51,10 +51,15 @@ const use = require("@tensorflow-models/universal-sentence-encoder");
 
 const Reply = {
   // returns chatbot's reponse to user input
-  async getChatbotResponse(userInput) {
+  getChatbotResponse(userInput) {
     // use TensorFlow.js Universal Sentence Encoder QnA dual encoder
     // Load the model.
     return use.loadQnA().then((model) => {
+      // handle blank user input
+      if (userInput === "") {
+        return "Ask me a question about COVID-19, and I'll do my best to answer it.";
+      }
+
       // Embed a dictionary of a query and responses. The input to the embed method
       // needs to be in following format:
       // {
