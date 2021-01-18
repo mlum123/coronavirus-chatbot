@@ -2,6 +2,16 @@
 
 A chatbot that answers your questions about coronavirus.
 
+Here are some things you can ask me:
+
+- What are the symptoms of coronavirus?
+- How do I properly wear a mask?
+- How many coronavirus patients are currently hospitalized in California?
+- How many new coronavirus cases did the U.S. have today?
+- How many coronavirus patients in the U.S. have recovered?
+
+This web app is fully responsive!
+
 ## Technologies Used:
 
 React, JavaScript, Reactstrap to integrate Bootstrap components with React, CSS, Fetch API for making requests to Covid Tracking Project API, TensorFlow.js Universal Sentence Encoder
