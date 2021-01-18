@@ -1,3 +1,17 @@
+# Coronavirus Chatbot
+
+A chatbot that answers your questions about coronavirus.
+
+## Technologies Used:
+
+React, JavaScript, Reactstrap to integrate Bootstrap components with React, CSS, Fetch API for making requests to Covid Tracking Project API, TensorFlow.js Universal Sentence Encoder
+
+## Acknowledgements:
+
+Thank you to the Atlantic's Covid Tracking Project (https://covidtracking.com/data/api) for providing realtime data on coronavirus in the U.S.
+
+Also, thank you to the TensorFlow.js Universal Sentence Encoder (https://github.com/tensorflow/tfjs-models/tree/master/universal-sentence-encoder), which I used to find the best response out of a collection of responses, for a given question.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
