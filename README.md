@@ -2,7 +2,7 @@
 
 A chatbot that answers your questions about coronavirus.
 
-Here are some things you can ask me:
+Here are some examples of things you can ask me:
 
 - What are the symptoms of coronavirus?
 - How do I properly wear a mask?
