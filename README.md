@@ -8,7 +8,6 @@ Here are some examples of things you can ask me:
 - How do I properly wear a mask?
 - How many coronavirus patients are currently hospitalized in California?
 - How many new coronavirus cases did the U.S. have today?
-- How many coronavirus patients in the U.S. have recovered?
 
 This web app is fully responsive!
 
