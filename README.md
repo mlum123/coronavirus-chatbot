@@ -11,6 +11,8 @@ Here are some examples of things you can ask me:
 
 This web app is fully responsive!
 
+Deployed at http://michelles-coronavirus-chatbot.surge.sh/
+
 ## Technologies Used:
 
 React, JavaScript, Reactstrap to integrate Bootstrap components with React, CSS, Fetch API for making requests to Covid Tracking Project API, TensorFlow.js Universal Sentence Encoder
